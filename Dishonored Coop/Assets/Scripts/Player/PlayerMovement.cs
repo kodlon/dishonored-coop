@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+<<<<<<< Updated upstream
     public CharacterController controller;
+=======
+    private CharacterController controller;
+>>>>>>> Stashed changes
     public float speed = 12f;
     public float gravity = -9.81f;
     public float jumpHeight = 3f;
@@ -15,6 +19,10 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 velocity;
     bool isGrounded;
+
+    private void Start() {
+        controller = GetComponent<CharacterController>();
+    }
 
     void Update()
     {
