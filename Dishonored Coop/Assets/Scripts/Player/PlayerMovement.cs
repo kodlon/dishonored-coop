@@ -6,7 +6,6 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private CharacterController controller;
-    //public Transform groundCheck;
     public LayerMask groundMask;
 
     [SerializeField] private float speed = 12f;
@@ -24,10 +23,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.E))
-        //{
-        //    Debug.Log("Jbject: " + groundCheck.position + ", vector: " + (transform.position + new Vector3(0f, -1.829f, 0f)));
-        //}
         isGrounded = Physics.CheckSphere(transform.position + new Vector3(0f, -1.829f, 0f), groundDistance, groundMask);
 
         if (isGrounded && velocity.y < 0)
