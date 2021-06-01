@@ -103,13 +103,15 @@ public class PlayerMovement : MonoBehaviour
          “ута лог≥ка така:
          Ѕеретьс€ висота точки з €коњ путили пром≥нь (float height),
          висота предмета в €кий та точка вдарилас€ (обчислюЇтьс€ з hit)
-         ≥ р≥зниц€ цих висот (тобто ск≥льки до вершини залишилос€) пор≥внюЇтьс€
+         ≥ р≥зниц€ цих висот (тобто ск≥льки до вершини залишилос€), пор≥внюЇтьс€
          з висотою на €ку може зал≥зти перс (climbHeight). якщо р≥зниц€ менша за 
          максимально допустиму висоту перс залазить, €кщо ж н≥ - то не залазить.
          */
         //if (height)
+        float hitHeight = hit.transform.position.y - height;
     }
 
+    // ћалюЇ промен≥ з перев≥ркою на вдар€нн€ в об'Їкт (т≥льки малюЇ)
     private void MyRaycast(Vector3 start, Vector3 direction, float distance, int layerMask)
     {
         RaycastHit hit;
