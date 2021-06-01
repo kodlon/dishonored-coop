@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private CharacterController controller;
-    public Transform groundCheck;
+    //public Transform groundCheck;
     public LayerMask groundMask;
 
     [SerializeField] private float speed = 12f;
