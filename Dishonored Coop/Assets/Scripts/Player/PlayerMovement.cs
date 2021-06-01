@@ -59,29 +59,59 @@ public class PlayerMovement : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
+
+        if (Input.GetKeyDown("e"))
+        {
+            Debug.Log("transform: " + transform.position + ", forward: " + transform.TransformDirection(Vector3.forward));
+        }
     }
     private void FixedUpdate()
-    {
-        //if (Input.GetKeyDown("e"))
-        //{
-        //    Climb();
-        //}
+    { 
         Climb();
     }
 
     private void Climb()
     {
+        //RaycastHit hit;
+        //if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, 1<<7))
+        //{
+        //    Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+        //    if (Input.GetKeyDown("q"))
+        //    {
+        //        Debug.Log("Did Hit");
+        //    }
+        //}
+        //else
+        //{
+        //    Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.red);
+        //    if (Input.GetKeyDown("q"))
+        //    {
+        //        Debug.Log("Did not Hit");
+        //    }
+        //}
+        MyRaycast(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward), Mathf.Infinity, 1<<7);
+        MyRaycast(transform.position, transform.TransformDirection(Vector3.forward), Mathf.Infinity, 1<<7);
+        MyRaycast(transform.position + new Vector3(0f, -1.36f, 0f), transform.TransformDirection(Vector3.forward), Mathf.Infinity, 1<<7);
+    }
+
+    private void MyRaycast(Vector3 start, Vector3 direction, float distance, int layerMask)
+    {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, 1<<7))
+        if (Physics.Raycast(start, direction, out hit, distance, layerMask))
         {
-            Debug.DrawRay(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward + new Vector3(0f, 1.36f, 0f)) * hit.distance, Color.yellow);
-            Debug.Log("Did Hit");
+            Debug.DrawRay(start, direction * hit.distance, Color.yellow);
+            if (Input.GetKeyDown("q"))
+            {
+                Debug.Log("Did Hit");
+            }
         }
         else
         {
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.red);
-            Debug.Log("Did not Hit");
+            Debug.DrawRay(start, direction * 1000, Color.red);
+            if (Input.GetKeyDown("q"))
+            {
+                Debug.Log("Did not Hit");
+            }
         }
-        
     }
 }
