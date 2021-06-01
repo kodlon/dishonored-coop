@@ -6,13 +6,12 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private CharacterController controller;
-    public Transform groundCheck;
     public LayerMask groundMask;
-    // do something
-    public float speed = 12f;
-    public float gravity = -9.81f;
-    public float jumpHeight = 3f;
-    public float groundDistance = 0.4f;
+
+    [SerializeField] private float speed = 12f;
+    [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private float jumpHeight = 3f;
+    [SerializeField] private float groundDistance = 0.4f;
 
     private Vector3 velocity;
     private bool isGrounded;
@@ -22,9 +21,9 @@ public class PlayerMovement : MonoBehaviour
         controller = GetComponent<CharacterController>();
     }
 
-    void Update()
+    private void Update()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        isGrounded = Physics.CheckSphere(transform.position + new Vector3(0f, -1.829f, 0f), groundDistance, groundMask);
 
         if (isGrounded && velocity.y < 0)
         {
