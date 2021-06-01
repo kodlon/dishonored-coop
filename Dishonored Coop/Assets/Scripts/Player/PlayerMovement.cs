@@ -11,8 +11,8 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private float speed = 12f;
     [SerializeField] private float gravity = -9.81f;
-    public float jumpHeight = 3f;
-    public float groundDistance = 0.4f;
+    [SerializeField] private float jumpHeight = 3f;
+    [SerializeField] private float groundDistance = 0.4f;
 
     private Vector3 velocity;
     private bool isGrounded;
@@ -24,11 +24,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Debug.Log(groundCheck.position);
-        }
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        //if (Input.GetKeyDown(KeyCode.E))
+        //{
+        //    Debug.Log("Jbject: " + groundCheck.position + ", vector: " + (transform.position + new Vector3(0f, -1.829f, 0f)));
+        //}
+        isGrounded = Physics.CheckSphere(transform.position + new Vector3(0f, -1.829f, 0f), groundDistance, groundMask);
 
         if (isGrounded && velocity.y < 0)
         {
