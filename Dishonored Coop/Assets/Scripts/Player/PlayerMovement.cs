@@ -74,7 +74,7 @@ public class PlayerMovement : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, 1<<7))
         {
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+            Debug.DrawRay(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward + new Vector3(0f, 1.36f, 0f)) * hit.distance, Color.yellow);
             Debug.Log("Did Hit");
         }
         else
