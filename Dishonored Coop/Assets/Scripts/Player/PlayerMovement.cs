@@ -36,8 +36,10 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 move = transform.right * x + transform.forward * z;
 
-        if (Input.GetKey(KeyCode.LeftShift)) { controller.Move(move * sprintSpeed * Time.deltaTime); }
-        else { controller.Move(move * speed * Time.deltaTime); }
+        controller.Move(Input.GetButton("Sprint") && isGrounded ? move * sprintSpeed * Time.deltaTime : move * speed * Time.deltaTime);
+
+        // if (Input.GetButton("Sprint")) { controller.Move(move * sprintSpeed * Time.deltaTime); }
+        // else { controller.Move(move * speed * Time.deltaTime); }
         
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
