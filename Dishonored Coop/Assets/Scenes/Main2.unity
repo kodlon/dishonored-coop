@@ -654,7 +654,7 @@ MonoBehaviour:
   gravity: -30
   jumpHeight: 3
   climbDistant: 3
-  groundDistance: 0.4
+  groundDistance: 1
 --- !u!1 &757123168
 GameObject:
   m_ObjectHideFlags: 0

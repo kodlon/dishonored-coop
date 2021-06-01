@@ -12,8 +12,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float sprintSpeed = 20f;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float jumpHeight = 3f;
-    [SerializeField] private float climbDistant = 3f;
-    [SerializeField] private float groundDistance = 0.4f;
+    [SerializeField] private float climbDistant = 3f; // Висота на яку може влізти гг
+    [SerializeField] private float groundDistance = 1f;
 
     private Vector3 velocity;
     private bool isGrounded;
@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         controller = GetComponent<CharacterController>();
+        Debug.Log("Size: " + GetComponent<Collider>().bounds.size);
     }
 
     private void Update()
@@ -62,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown("e"))
         {
-            Debug.Log("transform: " + transform.position + ", forward: " + transform.TransformDirection(Vector3.forward));
+            //Debug.Log("transform: " + transform.position + ", forward: " + transform.TransformDirection(Vector3.forward));
         }
     }
     private void FixedUpdate()
@@ -84,16 +85,22 @@ public class PlayerMovement : MonoBehaviour
 
         if (Physics.Raycast(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitHead, groundDistance, 1 << 7))
         {
+            float hitHeight = hitHead.transform.position.y * hitHead.collider.bounds.size.y / 2 - transform.position.y;
+            if (hitHeight < climbDistant)
+            {
+                Vector3.MoveTowards(transform.position, transform.position + new Vector3(0f, hitHeight, 0f), 15f);
+                Vector3.MoveTowards(transform.position, transform.position + new Vector3(0f, hitHeight, 0f), 15f);
+            }
 
-            Debug.Log(hitHead);
+            Debug.Log(hitHead.collider.bounds.size.y);
         }
         else if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hitTorso, groundDistance, 1 << 7))
         {
-            Debug.Log(hitTorso);
+            Debug.Log(hitTorso.collider.bounds.size.y);
         }
         else if (Physics.Raycast(transform.position + new Vector3(0f, -1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitFeet, groundDistance, 1 << 7))
         {
-            Debug.Log(hitFeet);
+            Debug.Log(hitFeet.collider.bounds.size.y);
         }
     }
 
