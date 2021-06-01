@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundMask;
 
     [SerializeField] private float speed = 12f;
+    [SerializeField] private float sprintSpeed = 20f;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float jumpHeight = 3f;
     [SerializeField] private float groundDistance = 0.4f;
@@ -35,8 +36,9 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 move = transform.right * x + transform.forward * z;
 
-        controller.Move(move * speed * Time.deltaTime);
-
+        if (Input.GetKey(KeyCode.LeftShift)) { controller.Move(move * sprintSpeed * Time.deltaTime); }
+        else { controller.Move(move * speed * Time.deltaTime); }
+        
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
