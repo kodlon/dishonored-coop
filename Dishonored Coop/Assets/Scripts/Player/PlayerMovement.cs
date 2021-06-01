@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float sprintSpeed = 20f;
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float jumpHeight = 3f;
+    [SerializeField] private float climbDistant = 3f;
     [SerializeField] private float groundDistance = 0.4f;
 
     private Vector3 velocity;
@@ -34,6 +35,11 @@ public class PlayerMovement : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
+        //if (Input.GetKeyDown("e"))
+        //{
+        //    Debug.Log(transform.forward);
+        //}
+
         Vector3 move = transform.right * x + transform.forward * z;
 
         controller.Move(Input.GetButton("Sprint") && isGrounded ? move * sprintSpeed * Time.deltaTime : move * speed * Time.deltaTime);
@@ -45,9 +51,37 @@ public class PlayerMovement : MonoBehaviour
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
+        else if (Input.GetButtonDown("Jump"))
+        {
+            //Climb();
+        }
 
         velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
+    }
+    private void FixedUpdate()
+    {
+        //if (Input.GetKeyDown("e"))
+        //{
+        //    Climb();
+        //}
+        Climb();
+    }
+
+    private void Climb()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, 1<<7))
+        {
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+            Debug.Log("Did Hit");
+        }
+        else
+        {
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.red);
+            Debug.Log("Did not Hit");
+        }
+        
     }
 }
