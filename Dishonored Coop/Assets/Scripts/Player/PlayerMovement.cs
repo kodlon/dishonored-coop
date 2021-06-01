@@ -72,26 +72,42 @@ public class PlayerMovement : MonoBehaviour
 
     private void Climb()
     {
-        //RaycastHit hit;
-        //if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, 1<<7))
-        //{
-        //    Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-        //    if (Input.GetKeyDown("q"))
-        //    {
-        //        Debug.Log("Did Hit");
-        //    }
-        //}
-        //else
-        //{
-        //    Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.red);
-        //    if (Input.GetKeyDown("q"))
-        //    {
-        //        Debug.Log("Did not Hit");
-        //    }
-        //}
-        MyRaycast(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward), Mathf.Infinity, 1<<7);
-        MyRaycast(transform.position, transform.TransformDirection(Vector3.forward), Mathf.Infinity, 1<<7);
-        MyRaycast(transform.position + new Vector3(0f, -1.36f, 0f), transform.TransformDirection(Vector3.forward), Mathf.Infinity, 1<<7);
+        MyRaycast(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward), groundDistance, 1<<7);
+        MyRaycast(transform.position, transform.TransformDirection(Vector3.forward), groundDistance, 1<<7);
+        MyRaycast(transform.position + new Vector3(0f, -1.36f, 0f), transform.TransformDirection(Vector3.forward), groundDistance, 1<<7);
+        RaycastHit hitHead;
+        RaycastHit hitTorso;
+        RaycastHit hitFeet;
+        //Physics.Raycast(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitHead, groundDistance, 1 << 7);
+        //Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hitTorso, groundDistance, 1 << 7);
+        //Physics.Raycast(transform.position + new Vector3(0f, -1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitFeet, groundDistance, 1 << 7);
+
+        if (Physics.Raycast(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitHead, groundDistance, 1 << 7))
+        {
+
+            Debug.Log(hitHead);
+        }
+        else if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hitTorso, groundDistance, 1 << 7))
+        {
+            Debug.Log(hitTorso);
+        }
+        else if (Physics.Raycast(transform.position + new Vector3(0f, -1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitFeet, groundDistance, 1 << 7))
+        {
+            Debug.Log(hitFeet);
+        }
+    }
+
+    private void StartClimb(float height,RaycastHit hit, float climbHeight)
+    {
+        /*
+         “ута лог≥ка така:
+         Ѕеретьс€ висота точки з €коњ путили пром≥нь (float height),
+         висота предмета в €кий та точка вдарилас€ (обчислюЇтьс€ з hit)
+         ≥ р≥зниц€ цих висот (тобто ск≥льки до вершини залишилос€) пор≥внюЇтьс€
+         з висотою на €ку може зал≥зти перс (climbHeight). якщо р≥зниц€ менша за 
+         максимально допустиму висоту перс залазить, €кщо ж н≥ - то не залазить.
+         */
+        //if (height)
     }
 
     private void MyRaycast(Vector3 start, Vector3 direction, float distance, int layerMask)
@@ -107,7 +123,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            Debug.DrawRay(start, direction * 1000, Color.red);
+            Debug.DrawRay(start, direction * distance, Color.red);
             if (Input.GetKeyDown("q"))
             {
                 Debug.Log("Did not Hit");
