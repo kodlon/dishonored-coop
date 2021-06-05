@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 velocity;
     private bool isGrounded;
+    private enum states { lowSquats, squats, stand};
 
     private void Start()
     {
@@ -85,12 +86,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Physics.Raycast(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitHead, groundDistance, 1 << 7))
         {
-            float hitHeight = hitHead.transform.position.y * hitHead.collider.bounds.size.y / 2 - transform.position.y;
-            if (hitHeight < climbDistant)
-            {
-                Vector3.MoveTowards(transform.position, transform.position + new Vector3(0f, hitHeight, 0f), 15f);
-                Vector3.MoveTowards(transform.position, transform.position + new Vector3(0f, hitHeight, 0f), 15f);
-            }
+            
 
             Debug.Log(hitHead.collider.bounds.size.y);
         }
@@ -106,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void StartClimb(float height,RaycastHit hit, float climbHeight)
     {
-        /*
+        /* // Ця логіа застаріла, пробую нову
          Тута логіка така:
          Береться висота точки з якої путили промінь (float height),
          висота предмета в який та точка вдарилася (обчислюється з hit)
@@ -116,6 +112,29 @@ public class PlayerMovement : MonoBehaviour
          */
         //if (height)
         float hitHeight = hit.transform.position.y - height;
+    }
+    private Vector3 StartClimb2(Vector3 startPoint, out float state)
+    {
+        float numberOfCheckRays = 15.0f;
+        float checkRayLength = climbDistant / numberOfCheckRays;
+        for (int i = 0; i < (int)numberOfCheckRays; i++)
+        {
+            if (!Physics.Raycast(startPoint, startPoint + new Vector3(0f, checkRayLength, 0f), checkRayLength, 1 << 7))
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    state = 0;
+                    if (!Physics.Raycast(startPoint, startPoint + new Vector3(0f, checkRayLength, 0f), 3.8f / 3.0f * j, 1 << 7))
+                    {
+                        state = j;
+                    }
+                    return startPoint;
+                }
+            }
+            startPoint += new Vector3(0f, checkRayLength, 0f);
+        }
+        state = -1;
+        return new Vector3(-1f, -1f, -1f);
     }
 
     // Малює промені з перевіркою на вдаряння в об'єкт (тільки малює)
