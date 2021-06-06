@@ -117,12 +117,12 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("Check Ray Length: " + checkRayLength);
             Debug.DrawRay(newStartPoint, new Vector3(0f, checkRayLength, 0f), Color.yellow, Mathf.Infinity);
-            if (!Physics.Raycast(newStartPoint, newStartPoint + new Vector3(0f, checkRayLength, 0f), checkRayLength, 1 << 7))
+            if (!Physics.Raycast(newStartPoint, new Vector3(0f, checkRayLength, 0f), checkRayLength, 1 << 7))
             {
                 for (int j = 0; j < 3; j++)
                 {
                     state = 0;
-                    if (!Physics.Raycast(newStartPoint, newStartPoint + transform.TransformDirection(Vector3.up), 3.8f / 3.0f * (float)j, 1 << 7))
+                    if (!Physics.Raycast(newStartPoint, transform.TransformDirection(Vector3.up), 3.8f / 3.0f * (float)j, 1 << 7))
                     {
                         state = j;
                     }
