@@ -86,57 +86,56 @@ public class PlayerMovement : MonoBehaviour
 
         if (Physics.Raycast(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitHead, groundDistance, 1 << 7))
         {
-            
-
-            Debug.Log(hitHead.collider.bounds.size.y);
+            float state;
+            Vector3 climbPoint = StartClimb2(hitHead.point, out state);
+            //Debug.Log(hitHead.collider.bounds.size.y);
+            Debug.Log("State head: " + state);
         }
         else if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hitTorso, groundDistance, 1 << 7))
         {
-            Debug.Log(hitTorso.collider.bounds.size.y);
+            float state;
+            Vector3 climbPoint = StartClimb2(hitTorso.point, out state);
+            //Debug.Log(hitTorso.collider.bounds.size.y);
+            Debug.Log("State torso: " + state);
         }
         else if (Physics.Raycast(transform.position + new Vector3(0f, -1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitFeet, groundDistance, 1 << 7))
         {
-            Debug.Log(hitFeet.collider.bounds.size.y);
+            float state;
+            Vector3 climbPoint = StartClimb2(hitFeet.point, out state);
+            //Debug.Log(hitFeet.collider.bounds.size.y);
+            Debug.Log("State feet: " + state);
         }
     }
 
-    private void StartClimb(float height,RaycastHit hit, float climbHeight)
-    {
-        /* // ÷€ лог≥а застар≥ла, пробую нову
-         “ута лог≥ка така:
-         Ѕеретьс€ висота точки з €коњ путили пром≥нь (float height),
-         висота предмета в €кий та точка вдарилас€ (обчислюЇтьс€ з hit)
-         ≥ р≥зниц€ цих висот (тобто ск≥льки до вершини залишилос€), пор≥внюЇтьс€
-         з висотою на €ку може зал≥зти перс (climbHeight). якщо р≥зниц€ менша за 
-         максимально допустиму висоту перс залазить, €кщо ж н≥ - то не залазить.
-         */
-        //if (height)
-        float hitHeight = hit.transform.position.y - height;
-    }
     private Vector3 StartClimb2(Vector3 startPoint, out float state)
     {
+        Vector3 newStartPoint = startPoint;
         float numberOfCheckRays = 15.0f;
         float checkRayLength = climbDistant / numberOfCheckRays;
+        state = -1;
         for (int i = 0; i < (int)numberOfCheckRays; i++)
         {
-            if (!Physics.Raycast(startPoint, startPoint + new Vector3(0f, checkRayLength, 0f), checkRayLength, 1 << 7))
+            Debug.Log("Check Ray Length: " + checkRayLength);
+            Debug.DrawRay(newStartPoint, new Vector3(0f, checkRayLength, 0f), Color.yellow, Mathf.Infinity);
+            if (!Physics.Raycast(newStartPoint, newStartPoint + new Vector3(0f, checkRayLength, 0f), checkRayLength, 1 << 7))
             {
                 for (int j = 0; j < 3; j++)
                 {
                     state = 0;
-                    if (!Physics.Raycast(startPoint, startPoint + new Vector3(0f, checkRayLength, 0f), 3.8f / 3.0f * j, 1 << 7))
+                    if (!Physics.Raycast(newStartPoint, newStartPoint + transform.TransformDirection(Vector3.up), 3.8f / 3.0f * (float)j, 1 << 7))
                     {
                         state = j;
                     }
-                    return startPoint;
                 }
+                if (state != -1) { return newStartPoint; }
             }
-            startPoint += new Vector3(0f, checkRayLength, 0f);
+            newStartPoint += new Vector3(0f, checkRayLength, 0f);
+            Debug.Log("New Start Point: " + newStartPoint);
+            Debug.Log("i: " + i);
         }
-        state = -1;
         return new Vector3(-1f, -1f, -1f);
     }
-
+    
     // ћалюЇ промен≥ з перев≥ркою на вдар€нн€ в об'Їкт (т≥льки малюЇ)
     private void MyRaycast(Vector3 start, Vector3 direction, float distance, int layerMask)
     {
@@ -158,4 +157,18 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
+    //private void StartClimb(float height, RaycastHit hit, float climbHeight)
+    //{
+    //    /* // ÷€ лог≥а застар≥ла, пробую нову
+    //     “ута лог≥ка така:
+    //     Ѕеретьс€ висота точки з €коњ путили пром≥нь (float height),
+    //     висота предмета в €кий та точка вдарилас€ (обчислюЇтьс€ з hit)
+    //     ≥ р≥зниц€ цих висот (тобто ск≥льки до вершини залишилос€), пор≥внюЇтьс€
+    //     з висотою на €ку може зал≥зти перс (climbHeight). якщо р≥зниц€ менша за 
+    //     максимально допустиму висоту перс залазить, €кщо ж н≥ - то не залазить.
+    //     */
+    //    //if (height)
+    //    float hitHeight = hit.transform.position.y - height;
+    //}
 }
