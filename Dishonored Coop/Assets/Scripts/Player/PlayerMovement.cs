@@ -115,10 +115,14 @@ public class PlayerMovement : MonoBehaviour
         state = -1;
         for (int i = 0; i < (int)numberOfCheckRays; i++)
         {
-            Debug.Log("Check Ray Length: " + checkRayLength);
+            //Debug.Log("Isn't hit: " + !Physics.Raycast(newStartPoint, newStartPoint + new Vector3(0f, checkRayLength, 0f), checkRayLength, 1 << 7));
+            //Debug.Log("Check Ray Length: " + checkRayLength);
             Debug.DrawRay(newStartPoint, new Vector3(0f, checkRayLength, 0f), Color.yellow, Mathf.Infinity);
-            if (!Physics.Raycast(newStartPoint, new Vector3(0f, checkRayLength, 0f), checkRayLength, 1 << 7))
+            if (Physics.Linecast(newStartPoint, newStartPoint + new Vector3(0f, checkRayLength, 0f), 1 << 7))
             {
+                //Debug.Log("Isn't hit: " + !Physics.Raycast(newStartPoint, newStartPoint + new Vector3(0f, checkRayLength, 0f), checkRayLength, 1 << 7));
+                //Debug.Log("Climb point: " + newStartPoint);
+                //Debug.Log("Climb point 2: " + (newStartPoint + new Vector3(0f, checkRayLength, 0f)));
                 for (int j = 0; j < 3; j++)
                 {
                     state = 0;
@@ -130,8 +134,8 @@ public class PlayerMovement : MonoBehaviour
                 if (state != -1) { return newStartPoint; }
             }
             newStartPoint += new Vector3(0f, checkRayLength, 0f);
-            Debug.Log("New Start Point: " + newStartPoint);
-            Debug.Log("i: " + i);
+            //Debug.Log("New Start Point: " + newStartPoint);
+            //Debug.Log("i: " + i);
         }
         return new Vector3(-1f, -1f, -1f);
     }
