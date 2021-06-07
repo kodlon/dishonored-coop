@@ -17,11 +17,13 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 velocity;
     private bool isGrounded;
+    private bool canClimb;
     private enum states { lowSquats, squats, stand};
 
     private void Start()
     {
         controller = GetComponent<CharacterController>();
+        canClimb = false;
         Debug.Log("Size: " + GetComponent<Collider>().bounds.size);
     }
 
@@ -51,6 +53,10 @@ public class PlayerMovement : MonoBehaviour
         
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
+            if (canClimb)
+            {
+
+            }
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
         else if (Input.GetButtonDown("Jump"))
@@ -69,10 +75,10 @@ public class PlayerMovement : MonoBehaviour
     }
     private void FixedUpdate()
     { 
-        Climb();
+        CheckClimb();
     }
 
-    private void Climb()
+    private void CheckClimb()
     {
         MyRaycast(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward), groundDistance, 1<<7);
         MyRaycast(transform.position, transform.TransformDirection(Vector3.forward), groundDistance, 1<<7);
