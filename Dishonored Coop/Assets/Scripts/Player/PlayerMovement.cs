@@ -39,80 +39,57 @@ public class PlayerMovement : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
-        //if (Input.GetKeyDown("e"))
-        //{
-        //    Debug.Log(transform.forward);
-        //}
-
         Vector3 move = transform.right * x + transform.forward * z;
 
         controller.Move(Input.GetButton("Sprint") && isGrounded ? move * sprintSpeed * Time.deltaTime : move * speed * Time.deltaTime);
-
-        // if (Input.GetButton("Sprint")) { controller.Move(move * sprintSpeed * Time.deltaTime); }
-        // else { controller.Move(move * speed * Time.deltaTime); }
         
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (Input.GetButtonDown("Jump"))
         {
             if (canClimb)
             {
-
+                Climb();
             }
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
-        else if (Input.GetButtonDown("Jump"))
-        {
-            //Climb();
+            else { if (isGrounded) { velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity); } }
         }
 
         velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
-
-        if (Input.GetKeyDown("e"))
-        {
-            //Debug.Log("transform: " + transform.position + ", forward: " + transform.TransformDirection(Vector3.forward));
-        }
     }
     private void FixedUpdate()
     { 
-        CheckClimb();
+        if (CheckClimb() >= 0) { canClimb = true; }
+        else { canClimb = false; }
     }
 
-    private void CheckClimb()
+    private float CheckClimb()
     {
+        float state = -1;
         MyRaycast(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward), groundDistance, 1<<7);
         MyRaycast(transform.position, transform.TransformDirection(Vector3.forward), groundDistance, 1<<7);
         MyRaycast(transform.position + new Vector3(0f, -1.36f, 0f), transform.TransformDirection(Vector3.forward), groundDistance, 1<<7);
         RaycastHit hitHead;
         RaycastHit hitTorso;
         RaycastHit hitFeet;
-        //Physics.Raycast(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitHead, groundDistance, 1 << 7);
-        //Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hitTorso, groundDistance, 1 << 7);
-        //Physics.Raycast(transform.position + new Vector3(0f, -1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitFeet, groundDistance, 1 << 7);
-
+        
         if (Physics.Raycast(transform.position + new Vector3(0f, 1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitHead, groundDistance, 1 << 7))
         {
-            float state;
             Vector3 climbPoint = StartClimb2(hitHead.point, out state);
-            //Debug.Log(hitHead.collider.bounds.size.y);
             Debug.Log("State head: " + state);
         }
         else if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hitTorso, groundDistance, 1 << 7))
         {
-            float state;
             Vector3 climbPoint = StartClimb2(hitTorso.point, out state);
-            //Debug.Log(hitTorso.collider.bounds.size.y);
             Debug.Log("State torso: " + state);
         }
         else if (Physics.Raycast(transform.position + new Vector3(0f, -1.36f, 0f), transform.TransformDirection(Vector3.forward), out hitFeet, groundDistance, 1 << 7))
         {
-            float state;
             Vector3 climbPoint = StartClimb2(hitFeet.point, out state);
-            //Debug.Log(hitFeet.collider.bounds.size.y);
             Debug.Log("State feet: " + state);
         }
-    }
 
+        return state;
+    }
     private Vector3 StartClimb2(Vector3 startPoint, out float state)
     {
         Vector3 newStartPoint = startPoint;
@@ -121,18 +98,17 @@ public class PlayerMovement : MonoBehaviour
         state = -1;
         for (int i = 0; i < (int)numberOfCheckRays; i++)
         {
-            //Debug.Log("Isn't hit: " + !Physics.Raycast(newStartPoint, newStartPoint + new Vector3(0f, checkRayLength, 0f), checkRayLength, 1 << 7));
-            //Debug.Log("Check Ray Length: " + checkRayLength);
             Debug.DrawRay(newStartPoint, new Vector3(0f, checkRayLength, 0f), Color.yellow, Mathf.Infinity);
-            if (Physics.Linecast(newStartPoint, newStartPoint + new Vector3(0f, checkRayLength, 0f), 1 << 7))
+            if (!Physics.Linecast(newStartPoint, newStartPoint + new Vector3(0f, checkRayLength, 0f), 1 << 7))
             {
-                //Debug.Log("Isn't hit: " + !Physics.Raycast(newStartPoint, newStartPoint + new Vector3(0f, checkRayLength, 0f), checkRayLength, 1 << 7));
-                //Debug.Log("Climb point: " + newStartPoint);
-                //Debug.Log("Climb point 2: " + (newStartPoint + new Vector3(0f, checkRayLength, 0f)));
+                state = 0;
                 for (int j = 0; j < 3; j++)
                 {
-                    state = 0;
-                    if (!Physics.Raycast(newStartPoint, new Vector3(0f, checkRayLength, 0f), 3.8f / 3.0f * (float)j, 1 << 7))
+                    //if (!Physics.Raycast(newStartPoint, new Vector3(0f, checkRayLength, 0f), 3.8f / 3.0f * (float)j, 1 << 7))
+                    //{
+                    //    state = j;
+                    //}
+                    if (!Physics.Linecast(newStartPoint, newStartPoint + new Vector3(0f, 3.8f / 3.0f * (float)j, 0f), 1 << 7))
                     {
                         state = j;
                     }
@@ -140,11 +116,14 @@ public class PlayerMovement : MonoBehaviour
                 if (state != -1) { return newStartPoint; }
             }
             newStartPoint += new Vector3(0f, checkRayLength, 0f);
-            //Debug.Log("New Start Point: " + newStartPoint);
-            //Debug.Log("i: " + i);
         }
         return new Vector3(-1f, -1f, -1f);
     }
+    private void Climb()
+    {
+
+    }
+
     
     // Малює промені з перевіркою на вдаряння в об'єкт (тільки малює)
     private void MyRaycast(Vector3 start, Vector3 direction, float distance, int layerMask)
